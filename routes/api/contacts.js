@@ -20,7 +20,6 @@ router.post(
 router.patch(
   "/:contactId/favorite",
   isValidId,
-  isEmptyBody,
   validateBody(Schema.updateFavoriteSchema),
   ctrl.updateStatusContact
 );
