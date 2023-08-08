@@ -24,7 +24,7 @@ const contactSchema = new Schema(
 );
 
 contactSchema.post("save", handleSaveErrors);
-
+contactSchema.post("findOneAndUpdate", handleSaveErrors);
 const Contact = model("contact", contactSchema);
 
 export default Contact;
