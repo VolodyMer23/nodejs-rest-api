@@ -33,12 +33,13 @@ const signin = async (req, res) => {
   if (!pwdCompare) {
     throw createHttpError(401, "Email or password is wrong");
   }
-    const { SECRET_KEY } = process.env;
-    
-    const payload = {
-        id: user._id
-    }
+  const { SECRET_KEY } = process.env;
+
+  const payload = {
+    id: user._id,
+  };
   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "8h" });
+  await User.findByIdAndUpdate(user._id, { token });
   res.status(201).json({
     token,
     user: {
@@ -48,7 +49,23 @@ const signin = async (req, res) => {
   });
 };
 
+const getCurrent = async (req, res) => {
+  const { name, email } = req.user;
+  res.json({
+    name,
+    email,
+  });
+};
+
+const logout = async (req, res) => {
+  const { _id } = req.user;
+  await User.findByIdAndUpdate(_id, { token: "" });
+  res.status(204).json({});
+};
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
+  getCurrent: ctrlWrapper(getCurrent),
+  logout: ctrlWrapper(logout),
 };
