@@ -50,10 +50,10 @@ const signin = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
-  const { name, email } = req.user;
+  const { subscription, email } = req.user;
   res.json({
-    name,
     email,
+    subscription,
   });
 };
 
@@ -63,9 +63,25 @@ const logout = async (req, res) => {
   res.status(204).json({});
 };
 
+const updateSubscription = async (req, res) => {
+  const { _id } = req.user;
+  const user = await User.findByIdAndUpdate(_id, req.body, {
+    new: true,
+  });
+
+  if (!user) {
+    throw createHttpError(404, "missing field");
+  }
+  res.json({
+    email: user.email,
+    subscription: user.subscription,
+  });
+};
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
+  updateSubscription: ctrlWrapper(updateSubscription),
 };

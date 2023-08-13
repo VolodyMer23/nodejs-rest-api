@@ -3,9 +3,14 @@ import createHttpError from "http-errors";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 
 const getAll = async (req, res, next) => {
-  const { page = 1, limit = 10 } = req.query;
+  const { _id } = req.user;
+  const { page = 1, limit = 20, favorite } = req.query;
   const skip = (page - 1) * limit;
-  const result = await Contact.find({}, "", {skip, limit});
+  const filterValue = favorite ? { owner: _id, favorite } : { owner: _id };
+  const result = await Contact.find(filterValue, "", { skip, limit }).populate(
+    "owner",
+    "email subscription"
+  );
 
   res.json(result);
 };

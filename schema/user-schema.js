@@ -5,6 +5,7 @@ const subscriptionTypes = ["starter", "pro", "business"];
 
 const userSingupSchema = Joi.object({
   email: Joi.string().pattern(emailRegexp).required().messages({
+    "string.pattern.base": "Please enter a valid email address.",
     "any.required": "missing required email field",
   }),
   password: Joi.string().min(6).required().messages({
@@ -13,8 +14,13 @@ const userSingupSchema = Joi.object({
 });
 
 const userSinginSchema = Joi.object({
-  email: Joi.string().pattern(emailRegexp).required(),
-  password: Joi.string().min(6).required(),
+  email: Joi.string().pattern(emailRegexp).required().messages({
+    "string.pattern.base": "Please enter a valid email address.",
+    "any.required": "missing required email field",
+  }),
+  password: Joi.string().min(6).required().messages({
+    "any.required": "missing required password field",
+  }),
 });
 
 const subscriptionSchema = Joi.object({
