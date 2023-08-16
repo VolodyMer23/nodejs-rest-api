@@ -5,7 +5,6 @@ import User from "../models/user-db.js";
 import "dotenv/config";
 
 const { SECRET_KEY } = process.env;
-console.log(SECRET_KEY);
 
 const authenticate = async (req, res, next) => {
   const { authorization = "" } = req.headers;

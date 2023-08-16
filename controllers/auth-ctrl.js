@@ -1,8 +1,9 @@
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import gravatar from "gravatar";
 import User from "../models/user-db.js";
 import createHttpError from "http-errors";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import "dotenv/config";
 
 const signup = async (req, res) => {
@@ -12,9 +13,14 @@ const signup = async (req, res) => {
     throw createHttpError(409, "Email in use");
   }
 
+  const avatarURL = gravatar.url(email);
   const hashPwd = await bcrypt.hash(password, 10);
 
-  const newUser = await User.create({ ...req.body, password: hashPwd });
+  const newUser = await User.create({
+    ...req.body,
+    password: hashPwd,
+    avatarURL,
+  });
   res.status(201).json({
     user: {
       email: newUser.email,
@@ -40,7 +46,7 @@ const signin = async (req, res) => {
   };
   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "8h" });
   await User.findByIdAndUpdate(user._id, { token });
-  res.status(201).json({
+  res.status(200).json({
     token,
     user: {
       email: user.email,
@@ -63,25 +69,9 @@ const logout = async (req, res) => {
   res.status(204).json({});
 };
 
-const updateSubscription = async (req, res) => {
-  const { _id } = req.user;
-  const user = await User.findByIdAndUpdate(_id, req.body, {
-    new: true,
-  });
-
-  if (!user) {
-    throw createHttpError(404, "missing field");
-  }
-  res.json({
-    email: user.email,
-    subscription: user.subscription,
-  });
-};
-
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
-  updateSubscription: ctrlWrapper(updateSubscription),
 };

@@ -1,7 +1,8 @@
 import express from "express";
 import userSchema from "../../schema/user-schema.js";
 import authCtrl from "../../controllers/auth-ctrl.js";
-import { isEmptyBody, authenticate } from "../../middlewares/index.js";
+import userCtrl from "../../controllers/user-ctrl.js"
+import { isEmptyBody, authenticate, upload } from "../../middlewares/index.js";
 import {validateBody} from "../../helpers/index.js";
 
 const authRouter = express.Router();
@@ -33,7 +34,15 @@ authRouter.patch(
   "/",
   authenticate,
   validateBody(userSchema.subscriptionSchema),
-  authCtrl.updateSubscription
+  userCtrl.updateSubscription
 );
+
+authRouter.patch(
+  "/avatars",
+  authenticate,
+  upload.single("avatar"),
+  userCtrl.updateAvatar
+);
+
 
 export default authRouter;
