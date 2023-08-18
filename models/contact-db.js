@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
-import handleSaveErrors from "../helpers/handleSaveError.js";
+import {handleSaveErrors, validateAtUpdate} from '../helpers/index.js'
+import { emailRegexp } from "../constants/regexp.js";
 
 const contactSchema = new Schema(
   {
@@ -9,7 +10,7 @@ const contactSchema = new Schema(
     },
     email: {
       type: String,
-      match: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/,
+      match: emailRegexp,
     },
     phone: {
       type: String,
@@ -19,9 +20,16 @@ const contactSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
   },
   { versionKey: false, timestamps: true }
 );
+
+contactSchema.pre("findOneAndUpdate", validateAtUpdate);
 
 contactSchema.post("save", handleSaveErrors);
 contactSchema.post("findOneAndUpdate", handleSaveErrors);

@@ -3,7 +3,15 @@ import createHttpError from "http-errors";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 
 const getAll = async (req, res, next) => {
-  const result = await Contact.find();
+  const { _id } = req.user;
+  const { page = 1, limit = 20, favorite } = req.query;
+  const skip = (page - 1) * limit;
+  const filterValue = favorite ? { owner: _id, favorite } : { owner: _id };
+  const result = await Contact.find(filterValue, "", { skip, limit }).populate(
+    "owner",
+    "email subscription"
+  );
+
   res.json(result);
 };
 
@@ -17,7 +25,8 @@ const getById = async (req, res, next) => {
 };
 
 const addContact = async (req, res, next) => {
-  const result = await Contact.create(req.body);
+  const { _id: owner } = req.user;
+  const result = await Contact.create({...req.body, owner});
   res.status(201).json(result);
 };
 
