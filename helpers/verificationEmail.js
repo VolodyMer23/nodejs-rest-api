@@ -3,8 +3,7 @@ import "dotenv/config";
 const { BASE_URL } = process.env;
 
 const createVerifyEmail = ({ email, verificationToken }) => {
-    console.log("email :>> ", email);
-    console.log('verificationToken :>> ', verificationToken);
+ 
   const verifyEmail = {
     to: email,
     subject: "Verify your email",

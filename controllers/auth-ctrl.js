@@ -27,9 +27,7 @@ const signup = async (req, res) => {
   });
 
   const verifyEmail = createVerifyEmail({ email, verificationToken });
-  console.log('verifyEmail :>> ', verifyEmail);
-  // const verify = await sendEmail(verifyEmail);
-  console.log("verify :>> ", verify);
+  await sendEmail(verifyEmail);
 
   res.status(201).json({
     user: {
@@ -41,6 +39,7 @@ const signup = async (req, res) => {
 
 const verify = async (req, res) => {
   const { verificationToken } = req.params;
+  console.log('verificationToken :>> ', verificationToken);
   const user = await User.findOne({ verificationToken });
   if (!user) {
     throw createHttpError(404, "User not found");
