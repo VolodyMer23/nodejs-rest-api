@@ -29,5 +29,13 @@ const subscriptionSchema = Joi.object({
     .required(),
 });
 
+const verifyEmailSchema = Joi.object({
+  email: Joi.string().pattern(emailRegexp).required(),
+});
 
-export default { userSingupSchema, userSinginSchema, subscriptionSchema };
+export default {
+  userSingupSchema,
+  userSinginSchema,
+  subscriptionSchema,
+  verifyEmailSchema,
+};
