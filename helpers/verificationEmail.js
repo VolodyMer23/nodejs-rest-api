@@ -1,5 +1,5 @@
 import "dotenv/config";
-const { BASE_URL } = process.env;
+const { BASE_URL, EMAIL_ADRESS } = process.env;
 
 const createVerifyEmail = ({ email, verificationToken }) => {
  

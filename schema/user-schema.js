@@ -33,7 +33,6 @@ const verifyEmailSchema = Joi.object({
   email: Joi.string().pattern(emailRegexp).required(),
 });
 
-
 export default {
   userSingupSchema,
   userSinginSchema,
