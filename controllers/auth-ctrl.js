@@ -27,6 +27,7 @@ const signup = async (req, res) => {
   });
 
   const verifyEmail = createVerifyEmail({ email, verificationToken });
+  
   await sendEmail(verifyEmail);
 
   res.status(201).json({

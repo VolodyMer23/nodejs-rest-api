@@ -1,4 +1,3 @@
-// import { template } from "./index.js";
 import "dotenv/config";
 const { BASE_URL } = process.env;
 
