@@ -1,9 +1,9 @@
 import express from "express";
 import userSchema from "../../schema/user-schema.js";
 import authCtrl from "../../controllers/auth-ctrl.js";
-import userCtrl from "../../controllers/user-ctrl.js"
+import userCtrl from "../../controllers/user-ctrl.js";
 import { isEmptyBody, authenticate, upload } from "../../middlewares/index.js";
-import {validateBody} from "../../helpers/index.js";
+import { validateBody } from "../../helpers/index.js";
 
 const authRouter = express.Router();
 
@@ -14,6 +14,14 @@ authRouter.post(
   authCtrl.signup
 );
 
+authRouter.get("/verify/:verificationToken", authCtrl.verify);
+
+authRouter.post(
+  "/verify",
+  validateBody(userSchema.verifyEmailSchema),
+  authCtrl.resendVerificationEmail
+);
+
 authRouter.post(
   "/login",
   isEmptyBody,
@@ -21,12 +29,7 @@ authRouter.post(
   authCtrl.signin
 );
 
-authRouter.get(
-  "/current",
-  authenticate,
-  authCtrl.getCurrent
-);
-
+authRouter.get("/current", authenticate, authCtrl.getCurrent);
 
 authRouter.post("/logout", authenticate, authCtrl.logout);
 
@@ -43,6 +46,5 @@ authRouter.patch(
   upload.single("avatar"),
   userCtrl.updateAvatar
 );
-
 
 export default authRouter;
